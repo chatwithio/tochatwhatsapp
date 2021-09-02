@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+	<name>whatsapp</name>
+	<displayName><![CDATA[ToChat.BE - Whatsapp Chat]]></displayName>
+	<version><![CDATA[2.0.0]]></version>
+	<description><![CDATA[Instalar y Configurar tochat.be en tu web]]></description>
+	<author><![CDATA[tochat.be]]></author>
+	<tab><![CDATA[administration]]></tab>
+	<is_configurable>1</is_configurable>
+	<need_instance>0</need_instance>
+	<limited_countries></limited_countries>
+</module>

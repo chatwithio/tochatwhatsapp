@@ -1,0 +1,18 @@
+.whatsappDiv.right {position:fixed;bottom:5px;right:5px;z-index:610}
+.whatsappDiv.left {position:fixed;bottom:5px;left:5px;z-index:610}
+ 
+.whatsappDiv a {float:right;cursor:pointer;display:inline-block;border:1px solid #888;height:55px;width:55px;background:#65bc54 url('../img/whataspp_icon.png') no-repeat center center;-webkit-border-radius: 40px;-moz-border-radius: 40px;border-radius: 40px;}
+.whatsappDiv a:before {background: transparent;border: 4px solid #57c216;content: "";height: 91px;left: -18px;filter: alpha(opacity=0);opacity: 0;position: absolute;top: -18px;width: 91px;z-index:1;border-radius:50%}
+.whatsappDiv a:before {-webkit-animation: sonar 1s ease-out infinite;-moz-animation: sonar 1s ease-out infinite;animation: sonar 1s ease-out infinite;}
+@-webkit-keyframes sonar {
+  from {-webkit-transform: scale(0);opacity: 1;}
+  to {-webkit-transform: scale(1);opacity: 0;}
+}
+@-moz-keyframes sonar {
+  from {-moz-transform: scale(0);opacity: 1;}
+  to {-moz-transform: scale(1);opacity: 0;}
+}
+@keyframes sonar {
+  from {transform: scale(0);opacity: 1;}
+  to {transform: scale(1);opacity: 0;}
+}
