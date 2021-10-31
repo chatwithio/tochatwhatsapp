@@ -1,0 +1,29 @@
+{
+  "name": "tochat/whatsapp",
+  "description": "Whatsapp Order Notification",
+  "license": "AFL-3.0",
+  "type": "prestashop-module",
+  "authors": [
+    {
+      "name": "Tochat",
+      "email": "contact@tochat.be"
+    }
+  ],
+  "config": {
+    "platform": {
+      "php": "7.2.0"
+    },
+    "preferred-install": "dist",
+    "optimize-autoloader": true,
+    "prepend-autoloader": false
+  },
+  "require": {
+    "php": ">=7.2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "PrestaShop\\Module\\TochatWhatsapp\\": "src/"
+    },
+    "classmap": ["tochat_whatsapp.php"]
+  }
+}
