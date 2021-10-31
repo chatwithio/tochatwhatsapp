@@ -1,0 +1,1 @@
+# whatsapp-prestashop-plugin
