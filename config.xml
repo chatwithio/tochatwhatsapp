@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
-    <name>tochat_whatsapp</name>
+    <name>tochatwhatsapp</name>
     <displayName><![CDATA[Tochat Whatsapp]]></displayName>
     <version><![CDATA[1.0.0]]></version>
     <tab><![CDATA[administration]]></tab>

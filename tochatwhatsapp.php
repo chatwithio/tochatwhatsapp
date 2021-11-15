@@ -43,19 +43,17 @@ class Tochatwhatsapp extends Module
         'TOCHATWHATSAPP_WIDGET_SNIPPET',
     ];
 
-    protected $_html = '';
+    protected $html = '';
 
-    protected $_api = null;
+    protected $tochatTemps = null;
 
-    protected $_tochatTemps = null;
+    protected $postErrors = array();
 
-    protected $_postErrors = array();
-
-    protected $_endpoint = 'https://waba.360dialog.io/v1/';
+    protected $endpoint = 'https://waba.360dialog.io/v1/';
 
     public function __construct()
     {
-        $this->name = 'tochat_whatsapp';
+        $this->name = 'tochatwhatsapp';
         $this->tab = 'administration';
         $this->version = '1.0.0';
         $this->author = 'Tochat';
@@ -90,11 +88,12 @@ class Tochatwhatsapp extends Module
         $this->registerHook('actionObjectCustomerAddAfter');
 
         //Set Default Config Values
-        Configuration::updateValue('TOCHATWHATSAPP_AUTOMATION_ENDPOINT', $this->_endpoint);
+        Configuration::updateValue('TOCHATWHATSAPP_AUTOMATION_ENDPOINT', $this->endpoint);
 
         // Alter customer table
         try {
-            Db::getInstance()->execute("ALTER TABLE `" . _DB_PREFIX_ . "customer` ADD `telephone` VARCHAR(32) NULL DEFAULT NULL;");
+            Db::getInstance()
+            ->execute("ALTER TABLE `" . _DB_PREFIX_ . "customer` ADD `telephone` VARCHAR(32) NULL DEFAULT NULL;");
         } catch (\Exception $e) {
         }
 
@@ -115,7 +114,8 @@ class Tochatwhatsapp extends Module
               PRIMARY KEY (`id`),
               KEY `TOCHAT_WHATSAPP_MESSAGE_ORDER_ID_SALES_ORDER_ENTITY_ID` (`order_id`),
               FULLTEXT KEY `TOCHAT_WHATSAPP_MESSAGE_MESSAGE_EXTRADATA_LOG` (`message`,`extradata`,`log`),
-              CONSTRAINT `TOCHAT_WHATSAPP_MESSAGE_ORDER_ID_PS_ORDERS_ID_ORDER` FOREIGN KEY (`order_id`) REFERENCES `' . _DB_PREFIX_ . 'orders` (`id_order`) ON DELETE SET NULL
+              CONSTRAINT `TOCHAT_WHATSAPP_MESSAGE_ORDER_ID_PS_ORDERS_ID_ORDER` 
+              FOREIGN KEY (`order_id`) REFERENCES `' . _DB_PREFIX_ . 'orders` (`id_order`) ON DELETE SET NULL
         ) ENGINE=' . _MYSQL_ENGINE_ . ' default CHARSET=utf8');
     }
 
@@ -192,15 +192,15 @@ class Tochatwhatsapp extends Module
             $endpoint = Tools::getValue('TOCHATWHATSAPP_AUTOMATION_ENDPOINT');
 
             if (!$apikey) {
-                $this->_postErrors[] = $this->trans('Apikey is Required.', array(), 'Modules.TochatWhatsapp.Admin');
+                $this->postErrors[] = $this->trans('Apikey is Required.', array(), 'Modules.TochatWhatsapp.Admin');
             }
             if (!$endpoint) {
-                $this->_postErrors[] = $this->trans('Endpoint is Required.', array(), 'Modules.TochatWhatsapp.Admin');
+                $this->postErrors[] = $this->trans('Endpoint is Required.', array(), 'Modules.TochatWhatsapp.Admin');
             }
             if ($apikey && $endpoint) {
                 $obj = $this->getApiObject($apikey, $endpoint);
                 if (gettype($obj) == 'string') {
-                    $this->_postErrors[] = $this->trans($obj, array(), 'Modules.TochatWhatsapp.Admin');
+                    $this->postErrors[] = $this->trans($obj, array(), 'Modules.TochatWhatsapp.Admin');
                 }
             }
         }
@@ -208,17 +208,29 @@ class Tochatwhatsapp extends Module
         if (Tools::isSubmit('tochatwhatsapp_abandoned')
             && Tools::getValue('TOCHATWHATSAPP_ABANDONED_STATUS') == 1) {
             if (!Tools::getValue('TOCHATWHATSAPP_ABANDONED_INTERVAL')) {
-                $this->_postErrors[] = $this->trans('Interval is Required.', array(), 'Modules.TochatWhatsapp.Admin');
+                $this->postErrors[] = $this->trans(
+                    'Interval is Required.',
+                    array(),
+                    'Modules.TochatWhatsapp.Admin'
+                );
             }
             if (!Tools::getValue('TOCHATWHATSAPP_ABANDONED_TEMPLATE')) {
-                $this->_postErrors[] = $this->trans('Abandoned Cart template is Required.', array(), 'Modules.TochatWhatsapp.Admin');
+                $this->postErrors[] = $this->trans(
+                    'Abandoned Cart template is Required.',
+                    array(),
+                    'Modules.TochatWhatsapp.Admin'
+                );
             }
         }
 
         if (Tools::isSubmit('tochatwhatsapp_widget')
             && Tools::getValue('TOCHATWHATSAPP_WIDGET_STATUS') == 1) {
             if (!Tools::getValue('TOCHATWHATSAPP_WIDGET_SNIPPET')) {
-                $this->_postErrors[] = $this->trans('Snippet is Required.', array(), 'Modules.TochatWhatsapp.Admin');
+                $this->postErrors[] = $this->trans(
+                    'Snippet is Required.',
+                    array(),
+                    'Modules.TochatWhatsapp.Admin'
+                );
             }
         }
     }
@@ -226,49 +238,89 @@ class Tochatwhatsapp extends Module
     protected function postProcess()
     {
         if (Tools::isSubmit('tochatwhatsapp_general')) {
-            Configuration::updateValue('TOCHATWHATSAPP_GENERAL_STATUS', Tools::getValue('TOCHATWHATSAPP_GENERAL_STATUS'));
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_GENERAL_STATUS',
+                Tools::getValue('TOCHATWHATSAPP_GENERAL_STATUS')
+            );
         }
 
         if (Tools::isSubmit('tochatwhatsapp_automation')) {
-            Configuration::updateValue('TOCHATWHATSAPP_AUTOMATION_STATUS', Tools::getValue('TOCHATWHATSAPP_AUTOMATION_STATUS'));
-            Configuration::updateValue('TOCHATWHATSAPP_AUTOMATION_APIKEY', Tools::getValue('TOCHATWHATSAPP_AUTOMATION_APIKEY'));
-            Configuration::updateValue('TOCHATWHATSAPP_AUTOMATION_ENDPOINT', Tools::getValue('TOCHATWHATSAPP_AUTOMATION_ENDPOINT'));
-            Configuration::updateValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_NEW', Tools::getValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_NEW'));
-            Configuration::updateValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_PROCESSING', Tools::getValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_PROCESSING'));
-            Configuration::updateValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_CANCELED', Tools::getValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_CANCELED'));
-            Configuration::updateValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_COMPLETE', Tools::getValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_COMPLETE'));
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_AUTOMATION_STATUS',
+                Tools::getValue('TOCHATWHATSAPP_AUTOMATION_STATUS')
+            );
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_AUTOMATION_APIKEY',
+                Tools::getValue('TOCHATWHATSAPP_AUTOMATION_APIKEY')
+            );
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_AUTOMATION_ENDPOINT',
+                Tools::getValue('TOCHATWHATSAPP_AUTOMATION_ENDPOINT')
+            );
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_AUTOMATION_TEMPLATE_NEW',
+                Tools::getValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_NEW')
+            );
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_AUTOMATION_TEMPLATE_PROCESSING',
+                Tools::getValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_PROCESSING')
+            );
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_AUTOMATION_TEMPLATE_CANCELED',
+                Tools::getValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_CANCELED')
+            );
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_AUTOMATION_TEMPLATE_COMPLETE',
+                Tools::getValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_COMPLETE')
+            );
         }
 
         if (Tools::isSubmit('tochatwhatsapp_abandoned')) {
-            Configuration::updateValue('TOCHATWHATSAPP_ABANDONED_STATUS', Tools::getValue('TOCHATWHATSAPP_ABANDONED_STATUS'));
-            Configuration::updateValue('TOCHATWHATSAPP_ABANDONED_INTERVAL', Tools::getValue('TOCHATWHATSAPP_ABANDONED_INTERVAL'));
-            Configuration::updateValue('TOCHATWHATSAPP_ABANDONED_TEMPLATE', Tools::getValue('TOCHATWHATSAPP_ABANDONED_TEMPLATE'));
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_ABANDONED_STATUS',
+                Tools::getValue('TOCHATWHATSAPP_ABANDONED_STATUS')
+            );
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_ABANDONED_INTERVAL',
+                Tools::getValue('TOCHATWHATSAPP_ABANDONED_INTERVAL')
+            );
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_ABANDONED_TEMPLATE',
+                Tools::getValue('TOCHATWHATSAPP_ABANDONED_TEMPLATE')
+            );
         }
 
         if (Tools::isSubmit('tochatwhatsapp_widget')) {
-            Configuration::updateValue('TOCHATWHATSAPP_WIDGET_STATUS', Tools::getValue('TOCHATWHATSAPP_WIDGET_STATUS'));
-            Configuration::updateValue('TOCHATWHATSAPP_WIDGET_SNIPPET', Tools::getValue('TOCHATWHATSAPP_WIDGET_SNIPPET'), true);
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_WIDGET_STATUS',
+                Tools::getValue('TOCHATWHATSAPP_WIDGET_STATUS')
+            );
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_WIDGET_SNIPPET',
+                Tools::getValue('TOCHATWHATSAPP_WIDGET_SNIPPET'),
+                true
+            );
         }
 
-        $this->_html .= $this->displayConfirmation($this->trans('Settings updated', array(), 'Admin.Global'));
+        $this->html .= $this->displayConfirmation($this->trans('Settings updated', array(), 'Admin.Global'));
     }
 
     public function getContent()
     {
         $this->postValidation();
-        if (!count($this->_postErrors)) {
+        if (!count($this->postErrors)) {
             $this->postProcess();
         } else {
-            foreach ($this->_postErrors as $err) {
-                $this->_html .= $this->displayError($err);
+            foreach ($this->postErrors as $err) {
+                $this->html .= $this->displayError($err);
             }
         }
 
-        $this->_html .= '<br />';
+        $this->html .= '<br />';
 
         $this->getTochatTemplates();
 
-        return $this->_html . $this->renderForm() . $this->displayCronUrl();
+        return $this->html . $this->renderForm() . $this->displayCronUrl();
     }
 
     public function getApiObject($apikey = null, $endpoint = null)
@@ -291,26 +343,26 @@ class Tochatwhatsapp extends Module
 
     public function getTochatTemplates()
     {
-        if ($this->_tochatTemps == null) {
-            $this->_tochatTemps = [];
+        if ($this->tochatTemps == null) {
+            $this->tochatTemps = [];
             $api = $this->getApiObject();
             if (gettype($api) != 'string') {
                 $response = $api->getTemplates();
                 foreach ($response->waba_templates as $template) {
                     if ($template->status == 'approved') {
-                        $this->_tochatTemps[] = $template;
+                        $this->tochatTemps[] = $template;
                     }
                 }
             }
         }
-        return $this->_tochatTemps;
+        return $this->tochatTemps;
     }
 
     public function getTochatTemplatesOptions()
     {
         $return = [];
-        if (count($this->_tochatTemps)) {
-            foreach ($this->_tochatTemps as $template) {
+        if (count($this->tochatTemps)) {
+            foreach ($this->tochatTemps as $template) {
                 $return[] = [
                     'id_option' => $template->name . '.' . $template->language,
                     'name' => $template->name . '(' . $template->language . ')',
@@ -357,7 +409,11 @@ class Tochatwhatsapp extends Module
         $automation = array(
             'form' => array(
                 'legend' => array(
-                    'title' => $this->trans('Order Notification with Whatsapp API', array(), 'Modules.TochatWhatsapp.Admin'),
+                    'title' => $this->trans(
+                        'Order Notification with Whatsapp API',
+                        array(),
+                        'Modules.TochatWhatsapp.Admin'
+                    ),
                     'icon' => 'icon-cogs',
                 ),
                 'input' => array(
@@ -587,7 +643,9 @@ class Tochatwhatsapp extends Module
         $address = new Address((int) $order->id_address_invoice);
 
         $this->context->smarty->assign([
-            "customer_telephone" => $this->getCustomerTelehone($order->id_customer) ?? $address->phone ?? $address->phone_mobile,
+            "customer_telephone" => $this->getCustomerTelehone($order->id_customer)
+                ?? $address->phone
+                ?? $address->phone_mobile,
         ]);
         return $this->display(__FILE__, "views/templates/hook/customer_telephone_field.tpl");
     }
@@ -659,7 +717,11 @@ class Tochatwhatsapp extends Module
         }
         $tab->class_name = 'AdminWhatsAppMessages';
         $tab->position = 10;
-        $tab->id_parent = Db::getInstance()->getValue("SELECT id_tab FROM " . _DB_PREFIX_ . "tab WHERE class_name = 'AdminAdvancedParameters';");
+        $tab->id_parent = Db::getInstance()
+                            ->getValue("SELECT id_tab 
+                                FROM " . _DB_PREFIX_ . "tab 
+                                WHERE class_name = 'AdminAdvancedParameters';
+                            ");
         $tab->module = $this->name;
         $tab->add();
     }
@@ -667,9 +729,9 @@ class Tochatwhatsapp extends Module
     public function displayCronUrl()
     {
         $domain = Tools::usingSecureMode() ? Tools::getShopDomainSsl(true) : Tools::getShopDomain(true);
-        $token = Tools::substr(Tools::encrypt('tochat_whatsapp/cron'), 0, 10);
+        $token = Tools::substr(Tools::encrypt('tochatwhatsapp/cron'), 0, 10);
         $this->smarty->assign([
-            'cron_url' => $domain . __PS_BASE_URI__ . 'modules/tochat_whatsapp/cron.php?&token=' . $token,
+            'cron_url' => $domain . __PS_BASE_URI__ . 'modules/tochatwhatsapp/cron.php?&token=' . $token,
         ]);
         return $this->display(__FILE__, 'views/templates/hook/cron-url.tpl');
     }
@@ -826,7 +888,11 @@ class Tochatwhatsapp extends Module
         $today = getdate();
         $now = date('Y-m-d H:i:s', $today[0]);
 
-        $sql = "SELECT * FROM `" . _DB_PREFIX_ . "cart` WHERE (`id_address_invoice` != '0' OR `id_customer` != 0) AND `id_cart` NOT IN (SELECT `id_cart` FROM `" . _DB_PREFIX_ . "orders`) AND TIMESTAMPDIFF(MINUTE, `date_upd`, '$now') = $interval";
+        $sql = "SELECT * FROM `" . _DB_PREFIX_ . "cart` 
+            WHERE (`id_address_invoice` != '0' OR `id_customer` != 0) 
+            AND `id_cart` NOT IN (SELECT `id_cart` 
+                FROM `" . _DB_PREFIX_ . "orders`) 
+            AND TIMESTAMPDIFF(MINUTE, `date_upd`, '$now') = $interval";
 
         $carts = Db::getInstance()->ExecuteS($sql);
 

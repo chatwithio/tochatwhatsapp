@@ -13,18 +13,18 @@
 
         <p>Order Automation Template Placeholders</p>
         <ul>
-            <li>{{'{{1}}'|escape:'htmlall':'UTF-8'}} => ORDERID</li>
-            <li>{{'{{2}}'|escape:'htmlall':'UTF-8'}} => CustomerName</li>
-            <li>{{'{{3}}'|escape:'htmlall':'UTF-8'}} => ProductNames</li>
-            <li>{{'{{4}}'|escape:'htmlall':'UTF-8'}} => Total</li>
+            <li>{{'{{1}}'}} => ORDERID</li>
+            <li>{{'{{2}}'}} => CustomerName</li>
+            <li>{{'{{3}}'}} => ProductNames</li>
+            <li>{{'{{4}}'}} => Total</li>
         </ul>
 
         <p>Abandoned cart Template Placeholders</p>
         <ul>
-            <li>{{'{{1}}'|escape:'htmlall':'UTF-8'}} => CustomerName</li>
-            <li>{{'{{2}}'|escape:'htmlall':'UTF-8'}} => ProductNames</li>
-            <li>{{'{{3}}'|escape:'htmlall':'UTF-8'}} => Total</li>
-            <li>{{'{{4}}'|escape:'htmlall':'UTF-8'}} => StoreName</li>
+            <li>{{'{{1}}'}} => CustomerName</li>
+            <li>{{'{{2}}'}} => ProductNames</li>
+            <li>{{'{{3}}'}} => Total</li>
+            <li>{{'{{4}}'}} => StoreName</li>
         </ul>
         
         <p>Please set the following url in run per mintunes on cpanel. it is required for automation of order emssage and abandoned cart messages.</p>

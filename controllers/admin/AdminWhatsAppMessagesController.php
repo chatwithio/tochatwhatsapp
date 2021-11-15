@@ -47,7 +47,7 @@ class AdminWhatsAppMessagesController extends ModuleAdminController
         $this->context->smarty->assign([
             "helperList" => $this->getMessagesList(),
         ]);
-        $this->setTemplate('../../../../modules/tochat_whatsapp/views/templates/admin/message_list.tpl');
+        $this->setTemplate('../../../../modules/tochatwhatsapp/views/templates/admin/message_list.tpl');
     }
 
     public function postProcess()

@@ -6,5 +6,5 @@
 
 
 <div class="whatsapp-messages-list">
-  {$helperList|unescape:'html'}
+  {$helperList}
 </div>
