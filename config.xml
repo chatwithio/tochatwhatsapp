@@ -3,6 +3,7 @@
     <name>tochat_whatsapp</name>
     <displayName><![CDATA[Tochat Whatsapp]]></displayName>
     <version><![CDATA[1.0.0]]></version>
+    <tab><![CDATA[administration]]></tab>
     <description><![CDATA[Whatsapp Order Notification]]></description>
     <author><![CDATA[Tochat]]></author>
     <tab><![CDATA[]]></tab>

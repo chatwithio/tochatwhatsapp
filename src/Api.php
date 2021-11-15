@@ -1,4 +1,10 @@
 <?php
+/**
+ * @author    360dialog – Official WhatsApp Business Solution Provider. <info@360dialog.com>
+ * @copyright 2021 360dialog GmbH.
+ * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
+ */
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException as HttpConnectException;
@@ -63,10 +69,9 @@ class Api
         } catch (HttpConnectException $e) {
             return $e->getMessage();
         } catch (ClientException $e) {
-
             $response = json_decode($e->getResponse()->getBody()->getContents());
 
-            if(isset($response->meta->success) && $response->meta->success == false){
+            if (isset($response->meta->success) && $response->meta->success == false) {
                 return (string)$response->meta->developer_message;
             }
             
@@ -147,5 +152,4 @@ class Api
         }
         return false;
     }
-
 }

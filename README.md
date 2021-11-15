@@ -13,7 +13,7 @@
     * Connect to server using FTP client.
     * Switch to Directory modules in prestashop root directory
     * Create a directory with name "tochat_whatsapp"
-    * upload all the files which downloaded from repo inside "tochat_whatsapp"
+    * upload all the files which downloaded from repo inside "tochatwhatsapp"
     * Go to Shop Backend > Modules > Module Catalog
     * here you see the module Tochat Whatsapp 
     * Click Install.

@@ -1,3 +1,9 @@
+{**
+ * @author    360dialog – Official WhatsApp Business Solution Provider. <info@360dialog.com>
+ * @copyright 2021 360dialog GmbH.
+ * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
+ *}
+
 <div class="form-group row" id="order_message_telephone">
   <label for="customer_telephone" class="form-control-label label-on-top col-12">
     <span class="text-danger">*</span>
@@ -5,7 +11,7 @@
   </label>
   <div class="col-12">
     <div class="input-group js-text-with-length-counter">
-      <input id="customer_telephone" name="customer-telephone" required="required" class="form-control" value="{$customer_telephone}">
+      <input id="customer_telephone" name="customer-telephone" required="required" class="form-control" value="{$customer_telephone|escape:'htmlall':'UTF-8'}">
     </div>
   </div>
 </div>
