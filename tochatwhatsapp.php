@@ -14,6 +14,8 @@ if (!defined('_CAN_LOAD_FILES_')) {
 }
 require_once dirname(__FILE__) . '/src/Api.php';
 
+use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
+
 class Tochatwhatsapp extends Module
 {
     const ORDER_STATE_NEW = 0;
@@ -32,6 +34,7 @@ class Tochatwhatsapp extends Module
         'TOCHATWHATSAPP_AUTOMATION_STATUS',
         'TOCHATWHATSAPP_AUTOMATION_APIKEY',
         'TOCHATWHATSAPP_AUTOMATION_ENDPOINT',
+        'TOCHATWHATSAPP_AUTOMATION_COUNTRY_CODE',
         'TOCHATWHATSAPP_AUTOMATION_TEMPLATE_NEW',
         'TOCHATWHATSAPP_AUTOMATION_TEMPLATE_PROCESSING',
         'TOCHATWHATSAPP_AUTOMATION_TEMPLATE_CANCELED',
@@ -58,6 +61,7 @@ class Tochatwhatsapp extends Module
         $this->version = '1.0.0';
         $this->author = 'Tochat';
         $this->need_instance = 0;
+        $this->need_instance = 0;
 
         $this->ps_versions_compliancy = array('min' => '1.7.1.0', 'max' => _PS_VERSION_);
 
@@ -69,6 +73,8 @@ class Tochatwhatsapp extends Module
         $this->description = $this->l('Whatsapp Order Notification');
 
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
+
+        $this->module_key = 'a68d4be9a9baf7cef997a6f013bb9886';
     }
 
     public function install()
@@ -190,6 +196,7 @@ class Tochatwhatsapp extends Module
         if (Tools::isSubmit('tochatwhatsapp_automation') && Tools::getValue('TOCHATWHATSAPP_AUTOMATION_STATUS') == 1) {
             $apikey = Tools::getValue('TOCHATWHATSAPP_AUTOMATION_APIKEY');
             $endpoint = Tools::getValue('TOCHATWHATSAPP_AUTOMATION_ENDPOINT');
+            $code = Tools::getValue('TOCHATWHATSAPP_AUTOMATION_COUNTRY_CODE');
 
             if (!$apikey) {
                 $this->postErrors[] = $this->trans('Apikey is Required.', array(), 'Modules.TochatWhatsapp.Admin');
@@ -197,6 +204,10 @@ class Tochatwhatsapp extends Module
             if (!$endpoint) {
                 $this->postErrors[] = $this->trans('Endpoint is Required.', array(), 'Modules.TochatWhatsapp.Admin');
             }
+            if (!$code) {
+                $this->postErrors[] = $this->trans('Country Code is Required.', array(), 'Modules.TochatWhatsapp.Admin');
+            }
+            
             if ($apikey && $endpoint) {
                 $obj = $this->getApiObject($apikey, $endpoint);
                 if (gettype($obj) == 'string') {
@@ -257,6 +268,11 @@ class Tochatwhatsapp extends Module
                 'TOCHATWHATSAPP_AUTOMATION_ENDPOINT',
                 Tools::getValue('TOCHATWHATSAPP_AUTOMATION_ENDPOINT')
             );
+            Configuration::updateValue(
+                'TOCHATWHATSAPP_AUTOMATION_COUNTRY_CODE',
+                Tools::getValue('TOCHATWHATSAPP_AUTOMATION_COUNTRY_CODE')
+            );
+            
             Configuration::updateValue(
                 'TOCHATWHATSAPP_AUTOMATION_TEMPLATE_NEW',
                 Tools::getValue('TOCHATWHATSAPP_AUTOMATION_TEMPLATE_NEW')
@@ -446,6 +462,12 @@ class Tochatwhatsapp extends Module
                         'label' => $this->trans('Endpoint', array(), 'Modules.TochatWhatsapp.Admin'),
                         'name' => 'TOCHATWHATSAPP_AUTOMATION_ENDPOINT',
                         'required' => true,
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->trans('Default Country Code(ex. +49)', array(), 'Modules.TochatWhatsapp.Admin'),
+                        'name' => 'TOCHATWHATSAPP_AUTOMATION_COUNTRY_CODE',
+                        'required' => true
                     ),
                     array(
                         'type' => 'select',
@@ -730,8 +752,12 @@ class Tochatwhatsapp extends Module
     {
         $domain = Tools::usingSecureMode() ? Tools::getShopDomainSsl(true) : Tools::getShopDomain(true);
         $token = Tools::substr(Tools::encrypt('tochatwhatsapp/cron'), 0, 10);
+
+        $link = new LinkCore;
+
         $this->smarty->assign([
             'cron_url' => $domain . __PS_BASE_URI__ . 'modules/tochatwhatsapp/cron.php?&token=' . $token,
+            'log_url' => $link->getAdminLink('AdminWhatsAppMessages'),
         ]);
         return $this->display(__FILE__, 'views/templates/hook/cron-url.tpl');
     }
@@ -793,7 +819,13 @@ class Tochatwhatsapp extends Module
                 }
             }
 
-            $tel = trim($address->phone ?? $address->phone_mobile, '+');
+            //Prefix country code
+            $prefix = Configuration::get('TOCHATWHATSAPP_AUTOMATION_COUNTRY_CODE', null);
+            $tel = $address->phone ?? $address->phone_mobile;
+            if ($prefix && strpos($tel, $prefix) === false) {
+                $tel = $prefix . $tel;
+            }
+            $tel = trim($tel, '+');
 
             $resData = [];
 
@@ -931,7 +963,15 @@ class Tochatwhatsapp extends Module
 
             $cartObj = new Cart((int) $cart['id_cart']);
 
-            $tel = trim($customerData['telephone'], '+');
+
+            //Prefix country code
+            $prefix = Configuration::get('TOCHATWHATSAPP_AUTOMATION_COUNTRY_CODE', null);
+            $tel = $customerData['telephone'];
+            if ($prefix && strpos($customerData['telephone'], $prefix) === false) {
+                $tel = $prefix . $tel;
+            }
+            $tel = trim($tel, '+');
+
 
             $template = Configuration::get('TOCHATWHATSAPP_ABANDONED_TEMPLATE', null);
 

@@ -9,7 +9,8 @@
     <i class="icon-cogs"></i>Documentation
   </div>
   <div class="form-wrapper">
-        <p>Tutorials, Videos, Demos.. <a href="https://tochat.be/magento-order-notifications-whatsapp/" target="_blank">tochat.be</a></p>
+        
+        <a href="{$log_url}"><strong>Find Message logs here.</strong></a>
 
         <p>Order Automation Template Placeholders</p>
         <ul>
@@ -18,7 +19,6 @@
             <li>{{'{{3}}'}} => ProductNames</li>
             <li>{{'{{4}}'}} => Total</li>
         </ul>
-
         <p>Abandoned cart Template Placeholders</p>
         <ul>
             <li>{{'{{1}}'}} => CustomerName</li>
@@ -26,7 +26,6 @@
             <li>{{'{{3}}'}} => Total</li>
             <li>{{'{{4}}'}} => StoreName</li>
         </ul>
-        
         <p>Please set the following url in run per mintunes on cpanel. it is required for automation of order emssage and abandoned cart messages.</p>
         <span>* * * * * curl -s "{$cron_url}" > /dev/null</span>
   </div>
