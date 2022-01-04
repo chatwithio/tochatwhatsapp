@@ -4,7 +4,8 @@
 
 ### 1. By Module Manager
     * Download the files from git repo
-    * Rename Download zip file to tochatwhatsapp.zip
+    * Extract files
+    * Open Directory, You see tochatwhatsapp-master. Rename it to tochatwhatsapp & Zip it.
     * Go to Shop Backend > Modules > Module Manger
     * Top Right Corner, you see Upload a module. Click here and select your file
     * the module will be installed on your shop.
