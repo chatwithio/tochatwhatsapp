@@ -21,3 +21,5 @@
     
 ### Module Configuration
     Admin > Modules > Module Manager > Find module Tochat Whatsapp > Configure
+
+    NOTE: DO NOT FORGET TO ADD CRON FILE ON SERVER. You can have the cron url in the CONFIGURATION
