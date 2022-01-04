@@ -24,6 +24,6 @@
     "psr-4": {
       "PrestaShop\\Module\\TochatWhatsapp\\": "src/"
     },
-    "classmap": ["tochat_whatsapp.php"]
+    "classmap": ["tochatwhatsapp.php"]
   }
 }

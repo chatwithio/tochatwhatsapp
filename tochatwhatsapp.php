@@ -12,8 +12,8 @@ if (!defined('_PS_VERSION_')) {
 if (!defined('_CAN_LOAD_FILES_')) {
     exit;
 }
-require_once dirname(__FILE__) . '/src/Api.php';
 
+use PrestaShop\Module\TochatWhatsapp\Api;
 use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
 
 class Tochatwhatsapp extends Module
