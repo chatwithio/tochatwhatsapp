@@ -140,7 +140,7 @@ class Tochatwhatsapp extends Module
         $status = (bool) Configuration::get('TOCHATWHATSAPP_WIDGET_STATUS', 0);
         $snippet = Configuration::get('TOCHATWHATSAPP_WIDGET_SNIPPET', null);
         if ($status && !empty($snippet)) {
-            return $snippet;
+            return sprintf('<script defer src="%s"></script>', $snippet);
         }
     }
     //PROCESS NEW ORDER TEMPLATE
@@ -618,9 +618,10 @@ class Tochatwhatsapp extends Module
                     ),
                     array(
                         'type' => 'textarea',
-                        'label' => $this->trans('Snippet', array(), 'Modules.TochatWhatsapp.Admin'),
+                        'label' => $this->trans('Snippet Url', array(), 'Modules.TochatWhatsapp.Admin'),
                         'name' => 'TOCHATWHATSAPP_WIDGET_SNIPPET',
                         'required' => true,
+                        'desc' => $this->trans('Please enter a valid url(eg.https://widget.tochat.be/bundle.js?key=xyz)', array(), 'Modules.TochatWhatsapp.Admin'),
                     ),
                 ),
                 'submit' => array(

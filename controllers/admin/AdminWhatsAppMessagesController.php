@@ -50,6 +50,11 @@ class AdminWhatsAppMessagesController extends ModuleAdminController
         $this->setTemplate('../../../../modules/tochatwhatsapp/views/templates/admin/message_list.tpl');
     }
 
+    public function viewAccess($disable = false)
+    {
+        return true;
+    }
+    
     public function postProcess()
     {
         if (Tools::isSubmit("submitResetToChatWhatsAppMessage")) {
