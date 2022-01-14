@@ -58,7 +58,7 @@ class Tochatwhatsapp extends Module
     {
         $this->name = 'tochatwhatsapp';
         $this->tab = 'administration';
-        $this->version = '1.0.0';
+        $this->version = '1.0.1';
         $this->author = 'Tochat';
         $this->need_instance = 0;
         $this->need_instance = 0;
