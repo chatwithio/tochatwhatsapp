@@ -728,8 +728,8 @@ class Tochatwhatsapp extends Module
         return Db::getInstance()->getValue("
             SELECT telephone
             FROM " . _DB_PREFIX_ . "customer
-            WHERE id_customer = $id_customer
-        ");
+            WHERE id_customer = ". (int) $id_customer
+        );
     }
 
     public function installBackofficeTab()
@@ -883,14 +883,14 @@ class Tochatwhatsapp extends Module
                     && $response->meta->success == false) {
                     $resData = [
                         'status' => self::MESSAGE_STATUS_FAILED,
-                        'message' => $messageStr,
+                        'message' => pSQL($messageStr),
                         'log' => $response->meta->developer_message,
                         'sent_on' => date('Y-m-d H:i:s'),
                     ];
                 } else {
                     $resData = [
                         'status' => self::MESSAGE_STATUS_SENT,
-                        'message' => $messageStr,
+                        'message' => pSQL($messageStr),
                         'sent_on' => date('Y-m-d H:i:s'),
                         'log' => null,
                     ];
@@ -1044,12 +1044,12 @@ class Tochatwhatsapp extends Module
                 Db::getInstance()->insert(
                     "tochat_whatsapp_message",
                     [
-                        "message" => $messageStr,
+                        "message" => pSQL($messageStr),
                         "type" => self::MESSAGE_TYPE_CART,
-                        "status" => $status,
-                        "extradata" => json_encode($customerData),
+                        "status" => pSQL($status),
+                        "extradata" => pSQL(json_encode($customerData)),
                         "sent_on" => date('Y-m-d H:i:s'),
-                        "log" => $log,
+                        "log" => pSQL($log),
                     ]
                 );
             }

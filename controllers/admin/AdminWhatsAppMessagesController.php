@@ -73,7 +73,7 @@ class AdminWhatsAppMessagesController extends ModuleAdminController
         foreach ($this->filters as $filter) {
             $filter_value = Tools::getValue($filter["filter_name"]);
             if ($filter_value != '' && $filter_value != null) {
-                $where .= str_replace("@", $filter_value, $filter["database_where"]);
+                $where .= str_replace("@", pSQL($filter_value), $filter["database_where"]);
             }
         }
         return $where;
@@ -209,6 +209,6 @@ class AdminWhatsAppMessagesController extends ModuleAdminController
         if ($id == '' || $id == null) {
             return;
         }
-        Db::getInstance()->execute("DELETE FROM " . _DB_PREFIX_ . "tochat_whatsapp_message WHERE id= " . $id);
+        Db::getInstance()->execute("DELETE FROM " . _DB_PREFIX_ . "tochat_whatsapp_message WHERE id= " . (int) $id);
     }
 }
